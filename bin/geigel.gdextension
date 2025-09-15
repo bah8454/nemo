@@ -1,0 +1,7 @@
+[configuration]
+entry_symbol = "geigel_library_init"
+compatibility_minimum = 4.4
+
+[libraries]
+windows.debug.x86_64 = "geigel.dll"
+windows.release.x86_64 = "geigel.dll"

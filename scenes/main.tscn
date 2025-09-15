@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://8osmtj7ugfrg"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+
+[node name="InputManager" type="InputManager" parent="."]
+mode = 1
