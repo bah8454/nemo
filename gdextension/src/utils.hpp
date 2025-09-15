@@ -8,7 +8,7 @@
         get_class_static(),                                                                                     \
         godot::PropertyInfo(                                                                                    \
             VARIANT_TYPE,                                                                                       \
-            #PROPERTY,                                                                                          \
+            #PROPERTY __VA_OPT__(,)                                                                             \
             __VA_ARGS__                                                                                         \
         ),                                                                                                      \
         "set_" #PROPERTY,                                                                                       \
@@ -16,7 +16,7 @@
     );
 
 #define GETTER_SETTER(TYPE, PROPERTY)                                                                           \
-    TYPE get_##PROPERTY() const { return this->##PROPERTY; }                                                    \
-    void set_##PROPERTY(TYPE PROPERTY) { this->##PROPERTY = PROPERTY; }
+    TYPE get_##PROPERTY() const { return this->PROPERTY; }                                                      \
+    void set_##PROPERTY(TYPE PROPERTY) { this->PROPERTY = PROPERTY; }
 
-#endif GEIGEL_INPUT_MANAGER
+#endif

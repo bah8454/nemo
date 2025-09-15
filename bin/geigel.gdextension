@@ -5,3 +5,5 @@ compatibility_minimum = 4.4
 [libraries]
 windows.debug.x86_64 = "geigel.dll"
 windows.release.x86_64 = "geigel.dll"
+linux.debug.x86_64 = "geigel.so"
+linux.release.x86_64 = "geigel.so"
