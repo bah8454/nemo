@@ -3,6 +3,8 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
+#include "boid.hpp"
+#include "boid_manager.hpp"
 #include "input_manager.hpp"
 
 void geigel_initialize_module(godot::ModuleInitializationLevel level) {
@@ -10,7 +12,10 @@ void geigel_initialize_module(godot::ModuleInitializationLevel level) {
         return;
     }
 
+    // Initialize all of our custom classes.
     godot::ClassDB::register_class<InputManager>();
+    godot::ClassDB::register_class<BoidManager>();
+    godot::ClassDB::register_class<Boid>();
 }
 
 void geigel_uninitialize_module(godot::ModuleInitializationLevel level) {
@@ -19,6 +24,7 @@ void geigel_uninitialize_module(godot::ModuleInitializationLevel level) {
     }
 }
 
+// Expose the library initialization symbols.
 extern "C" {
 
 GDExtensionBool GDE_EXPORT geigel_library_init(GDExtensionInterfaceGetProcAddress get_proc_address, const GDExtensionClassLibraryPtr library, GDExtensionInitialization* initialization) {

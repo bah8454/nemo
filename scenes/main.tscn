@@ -1,8 +1,33 @@
-[gd_scene format=3 uid="uid://8osmtj7ugfrg"]
+[gd_scene load_steps=3 format=3 uid="uid://8osmtj7ugfrg"]
+
+[ext_resource type="ArrayMesh" uid="uid://dnortvayo4j6i" path="res://models/teapot.obj" id="1_o5qli"]
+
+[sub_resource type="Environment" id="Environment_0wfyh"]
 
 [node name="Node3D" type="Node3D"]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0wfyh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+
 [node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
 
 [node name="InputManager" type="InputManager" parent="."]
-mode = 1
+
+[node name="BoidManager" type="BoidManager" parent="."]
+count = 500
+collision_avoidance_weight = 0.4
+velocity_matching_weight = 0.1
+centering_weight = 0.1
+boundary_weight = 0.4
+boundary_radius = 5.0
+range = 3.0
+prototype_path = NodePath("../Teapot")
+maximum_speed = 20.0
+maximum_acceleration = 5.0
+
+[node name="Teapot" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+mesh = ExtResource("1_o5qli")

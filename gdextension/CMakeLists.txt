@@ -21,6 +21,10 @@ add_library(${PROJECT_NAME} SHARED ${SOURCES})
 # Add compile options.
 target_compile_definitions(${PROJECT_NAME} PRIVATE TYPED_METHOD_BIND)
 
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor)
+endif()
+
 ############################################################################################
 
 # Add godot-cpp.
