@@ -5,3 +5,7 @@
 /gdextension/out
 /gdextension/build
 /gdextension/linux
+
+# Builds
+/build/
+/bin/
