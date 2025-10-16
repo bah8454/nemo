@@ -24,8 +24,6 @@
 #include <array>
 #include <cmath>
 
-#include <osc++.hpp>
-
 class BoidManager : public godot::Node3D {
     GDCLASS(BoidManager, godot::Node3D);
 public:
