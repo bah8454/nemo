@@ -34,6 +34,7 @@ public:
     GETTER_SETTER(godot::real_t, following_weight);
     GETTER_SETTER(godot::real_t, boundary_weight);
     GETTER_SETTER(godot::real_t, boundary_radius);
+    GETTER_SETTER(godot::real_t, upright_weight);
     GETTER_SETTER(godot::real_t, range);
     GETTER_SETTER(godot::NodePath, prototype_path);
     GETTER_SETTER(godot::real_t, maximum_speed);
@@ -107,7 +108,10 @@ public:
 
             godot::Vector3 boid_up = boid->get_global_transform().basis.get_column(1);
             if (velocity.length() > 0.01) { // TODO: Epsilon.
-                boid->look_at(position + velocity, boid_up);
+                godot::Vector3 world_up{0, 1, 0};
+
+                godot::Vector3 desired_up = boid_up.lerp(world_up, this->upright_weight).normalized();
+                boid->look_at(position + velocity, desired_up);
             }
         }
 
@@ -125,6 +129,7 @@ public:
         BIND_PROPERTY(following_weight, godot::Variant::FLOAT);
         BIND_PROPERTY(boundary_weight, godot::Variant::FLOAT);
         BIND_PROPERTY(boundary_radius, godot::Variant::FLOAT);
+        BIND_PROPERTY(upright_weight, godot::Variant::FLOAT);
         BIND_PROPERTY(range, godot::Variant::FLOAT);
         BIND_PROPERTY(prototype_path, godot::Variant::NODE_PATH);
         BIND_PROPERTY(maximum_speed, godot::Variant::FLOAT);
@@ -141,6 +146,7 @@ private:
 
     godot::real_t boundary_weight = 0;
     godot::real_t boundary_radius = 10;
+    godot::real_t upright_weight = 0.25;
 
     godot::real_t range = 0;
 
