@@ -1,11 +1,11 @@
 # Godot 4+ specific ignores
-.godot/
-/android/
-/gdextension/.vs
-/gdextension/out
-/gdextension/build
-/gdextension/linux
+/src/.godot/
+/src/android/
+/src/gdextension/.vs
+/src/gdextension/out
+/src/gdextension/build
+/src/gdextension/linux
 
 # Builds
-/build/
-/bin/
+/src/build/
+/src/bin/
