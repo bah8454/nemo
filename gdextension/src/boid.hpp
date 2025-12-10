@@ -4,8 +4,6 @@
 #include <godot_cpp/classes/node3d.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/variant.hpp>
-#include <godot_cpp/classes/input.hpp>
-#include <godot_cpp/classes/input_event_key.hpp>
 
 #include "utils.hpp"
 

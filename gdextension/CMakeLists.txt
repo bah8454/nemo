@@ -27,6 +27,10 @@ endif()
 
 ############################################################################################
 
+target_include_directories(${PROJECT_NAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/godot-headers/gen/include"
+)
+
 # Add godot-cpp.
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/godot-cpp" build)
 target_link_libraries(${PROJECT_NAME} PRIVATE godot::cpp)

@@ -15,8 +15,11 @@
 #include <godot_cpp/classes/v_box_container.hpp>
 #include <godot_cpp/classes/margin_container.hpp>
 #include <godot_cpp/variant/transform3d.hpp>
+#include <godot_cpp/classes/image.hpp>
+#include <godot_cpp/classes/random_number_generator.hpp>
 
 #include "utils.hpp"
+#include "input_manager.hpp"
 
 #include <sstream>
 #include <string>
@@ -39,14 +42,18 @@ public:
     GETTER_SETTER(godot::NodePath, prototype_path);
     GETTER_SETTER(godot::real_t, maximum_speed);
     GETTER_SETTER(godot::real_t, maximum_acceleration);
+    GETTER_SETTER(godot::NodePath, input_manager_path);
 
     void _ready() {
         if (utils::in_editor()) { return; }
         this->initialize_boids();
+        this->mask_points.reserve(this->get_count());
     }
 
     void _process(godot::real_t delta) {
         if (utils::in_editor()) { return; }
+
+        this->handle_input();
 
         for (Boid* boid : this->boids) {
             godot::Vector3 position = boid->get_position();
@@ -134,6 +141,7 @@ public:
         BIND_PROPERTY(prototype_path, godot::Variant::NODE_PATH);
         BIND_PROPERTY(maximum_speed, godot::Variant::FLOAT);
         BIND_PROPERTY(maximum_acceleration, godot::Variant::FLOAT);
+        BIND_PROPERTY(input_manager_path, godot::Variant::NODE_PATH);
     }
 
 private:
@@ -158,6 +166,13 @@ private:
 
     std::vector<Boid*> boids;
 
+    godot::NodePath input_manager_path{};
+    InputManager* input_manager = nullptr;
+    godot::String current_input = "";
+    std::vector<godot::Vector2> mask_points{};
+
+    godot::RandomNumberGenerator* rng = memnew(godot::RandomNumberGenerator);
+
     void initialize_boids() {
         for (std::size_t i = 0; i < this->count; ++i) {
             // Allocate the node.
@@ -165,8 +180,8 @@ private:
             // Tell the manager the information it requires.
             this->boids.push_back(boid);
             // Obtain a handle to the prototype.
-            this->prototype = this->get_node<godot::Node3D>(prototype_path);
-            if (!prototype) {
+            this->prototype = this->get_node<godot::Node3D>(this->prototype_path);
+            if (!this->prototype) {
                 godot::print_error("Prototype node not found!");
                 return;
             }
@@ -177,6 +192,67 @@ private:
             this->add_child(boid);
         }
     }
+
+    void handle_input() {
+        if (this->input_manager == nullptr) {
+            // Obtain a handle to the input manager.
+            this->input_manager = this->get_node<InputManager>(this->input_manager_path);
+            if (!this->input_manager) {
+                godot::print_error("Input manager node not found!");
+                return;
+            }
+        }
+        //godot::UtilityFunctions::print("Input: ", this->input_manager->get_current());
+        if (this->current_input == this->input_manager->get_current()) { return; }
+        this->current_input = this->input_manager->get_current();
+        godot::String mask_path = "res://masks/" + this->input_manager->get_current() + ".png";
+        this->set_mask_points(mask_path);
+        this->set_boid_destinations();
+    }
+
+    void set_boid_destinations() {
+        for (std::size_t i = 0; i < this->boids.size(); ++i) {
+            godot::Vector2 point = this->mask_points[i % this->mask_points.size()];
+            boids[i]->destination = godot::Vector3{ (point.x - 371)/20, -(point.y - 371)/20, 0 };
+        }
+    }
+
+    void set_mask_points(godot::String mask_path) {
+        this->mask_points.clear();
+        godot::Ref<godot::Image> image = godot::Image::load_from_file(mask_path);
+        image->decompress();
+        image->convert(godot::Image::Format::FORMAT_RGBA8);
+        std::size_t width = image->get_width();
+        std::size_t height = image->get_height();
+        std::vector<godot::Vector2> masked_pixels{};
+        for (std::size_t y = 0; y < height; ++y) {
+            for (std::size_t x = 0; x < width; ++x) {
+                godot::Color c = image->get_pixel(x, y);
+                if (c.a > 0.5) {
+                    masked_pixels.emplace_back(static_cast<godot::real_t>(x), static_cast<godot::real_t>(y));
+                }
+            }
+        }
+        if (masked_pixels.empty()) { return; }
+        std::size_t attempts = 0;
+        std::size_t maximum_attempts = 5000;
+        godot::real_t minimum_distance = 5;
+        while (this->mask_points.size() < this->get_count() && attempts < maximum_attempts) {
+            attempts += 1;
+            godot::Vector2 candidate = masked_pixels[this->rng->randi_range(0, masked_pixels.size())];
+            bool ok = true;
+            for (godot::Vector2& point : this->mask_points) {
+                if (point.distance_to(candidate) < minimum_distance) {
+                    ok = false;
+                    break;
+                }
+            }
+            if (ok) {
+                this->mask_points.push_back(candidate);
+            }   
+        }
+        godot::UtilityFunctions::print("Got ", this->mask_points.size(), " points.");
+    }
 };
 
-#endif
+#endif////////////////

@@ -8,7 +8,6 @@
 #include <godot_cpp/classes/input_event_key.hpp>
 
 #include "utils.hpp"
-#include "boid.hpp"
 
 /// Manages user input.
 class InputManager : public godot::Node3D {
@@ -38,11 +37,16 @@ public:
         // Check for key press information and print it to the console.
         godot::Ref<godot::InputEventKey> key_input = event;
         if (key_input.is_valid() && key_input->is_pressed()) {
-            char template_string[] = "_";
-            template_string[0] = static_cast<char>(key_input->get_keycode());
-            const char* final_string = template_string;
-            this->current = godot::String{ final_string };
-            godot::UtilityFunctions::print(this->current);
+            char c = static_cast<char>(key_input->get_keycode());
+            if ((c >= 'A' && c <= 'Z') || (c >= '1' && c <= '9')) {
+                char template_string[] = "_";
+                template_string[0] = c;
+                const char* final_string = template_string;
+                this->current = godot::String{ final_string };
+            } else {
+                this->current = "";
+            }
+            
         }
     }
 
