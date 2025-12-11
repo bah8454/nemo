@@ -198,13 +198,13 @@ Interested in running this project locally?
 Here's a small sample of the finished project!
 
 ## Fish Reacting to Different Input Letters
-<video src="/media/fish.mp4" width="640" height="480" controls>
-  Fish Reacting to Different Input Letters
+<video width="640" height="480" controls>
+    <source type="video/mp4" src="/media/fish.mp4">
 </video>
 
 ## Fish Forming the letter Y
-<video src="/media/good.mp4" width="640" height="480" controls>
-  Fish Forming the Letter Y
+<video width="640" height="480" controls>
+    <source type="video/mp4" src="/media/good.mp4">
 </video>
 
 ---
