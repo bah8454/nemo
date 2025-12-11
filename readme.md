@@ -1,6 +1,6 @@
 By Audrey Fuller, Benson Haley & Spencer Kurtz
 
-<video width="640" height="480" autoplay="" loop="" muted="">
+<video width="1920" height="1080" autoplay="" loop="" muted="">
     <source src="./media/final.mp4" type="video/mp4">
 </video>
 
@@ -92,22 +92,33 @@ Each frame, each boid computes the classic Boids forces:
     collision_avoidance = collision_avoidance.normalized() * this->maximum_speed - velocity;
 ```
 
-These are normalized, limited by max acceleration, and combined using user-provided weights. We also add a following parameter to move a fish towards its destination.
+These are normalized, limited by max acceleration, and combined using user-provided weights. 
 
 ---
 
 ## Bounding Box
-In addition to the base flocking algorithm our algorithm uses a custom boundary force parameter to re-adjust the boid's position to push inward when outside of the letter shape.
+In addition to the base flocking algorithm, our project uses a custom shape-bounding system to define new targets for the boids from an input image. This results in them re-adjust the boid's position to 'fill' the image shape, thus giving the illusion of forming a letter in 3D space. 
 
 ![Fish Making an A](/media/fish_a.png)
 
+With our initial implementation of this, we were running into an issue where the boids would either overshoot the target entirely, OR become stationary at it's target destination. To fix this, we implemented an `offset` that angles the movement of the boid slightly adjacent to it's target position, resulting in a more orbit-like path.
+
 ```cpp
-godot::real_t dist_from_center = position.length();
-            if (dist_from_center > this->boundary_radius) {
-                godot::Vector3 to_center = (-position).normalized();
-                godot::real_t strength = (dist_from_center - this->boundary_radius) / this->boundary_radius;
-                boundary_force = (to_center * strength * this->maximum_speed - velocity).limit_length(this->maximum_acceleration);
-            }
+godot::Vector3 offset_destination(const godot::Vector3& base_destination, godot::real_t maximum_offset_distance = 1.0) {
+    godot::real_t theta = this->rng->randf() * Math_TAU;
+    godot::real_t phi = acos(2.0 * this->rng->randf() - 1);
+
+    godot::Vector3 dir{
+        sin(phi) * cos(theta),
+        cos(phi),
+        sin(phi) * sin(theta)
+    };
+
+    // Random distance within radius
+    godot::real_t dist = this->rng->randf() * maximum_offset_distance;
+
+    return base_destination + dir * dist;
+}
 ```
 
 This is done in **Three Steps**:
