@@ -3,3 +3,5 @@ plugins:
 - jekyll-remote-theme
 title: Nemo
 description: Representational Fish Swarming Implemented in the Godot Engine
+baseurl: /nemo
+url: https://bah8454.github.io
