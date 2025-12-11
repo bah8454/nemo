@@ -199,12 +199,12 @@ Here's a small sample of the finished project!
 
 ## Fish Reacting to Different Input Letters
 <video width="640" height="480" autoplay="" loop="" muted="">
-    <source src="/media/fish.mp4" type="video/mp4">
+    <source src="./media/fish.mp4" type="video/mp4">
 </video>
 
 ## Fish Forming the letter Y
 <video width="640" height="480" autoplay="" loop="" muted="">
-    <source src="/media/good.mp4" type="video/mp4">
+    <source src="./media/good.mp4" type="video/mp4">
 </video>
 
 ---
