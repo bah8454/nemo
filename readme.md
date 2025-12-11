@@ -7,7 +7,7 @@ Otherwise final video
 # Project Overview
 Do you remember the scene in _Finding Nemo_ where the school of fish forms shapes to give Marlin directions?
 
-<iframe width="560" height="315" src="https://youtu.be/Le13by2WM70?si=kXPaxrwvXnOtghgr" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+![Finding Nemo Gif](/media/finding_nemo.gif)
 
 This project is inspired by that idea.
 We built a custom **Godot tool**, backed by a C++ GDExtension, that lets a swarm of fish **dynamically form an arbitrary shape** based on user-selected input. This provides a streamlined visualization tool for technical artists and developers working with flocking simulations or shape-based formations.
@@ -198,10 +198,14 @@ Interested in running this project locally?
 Here's a small sample of the finished project!
 
 ## Fish Reacting to Different Input Letters
-![Fish Reacting to Different Input Letters](/media/fish.mp4)
+<video src="/media/fish.mp4" width="640" height="480" controls>
+  Fish Reacting to Different Input Letters
+</video>
 
 ## Fish Forming the letter Y
-![Fish Forming the Letter Y](/media/good.mp4)
+<video src="/media/good.mp4" width="640" height="480" controls>
+  Fish Forming the Letter Y
+</video>
 
 ---
 
