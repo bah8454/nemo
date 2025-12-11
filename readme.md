@@ -1,8 +1,8 @@
 By Audrey Fuller, Benson Haley & Spencer Kurtz
 
-TODO: Insert Web Build for game?
-& controls info
-Otherwise final video
+<video width="640" height="480" autoplay="" loop="" muted="">
+    <source src="./media/final.mp4" type="video/mp4">
+</video>
 
 # Project Overview
 Do you remember the scene in _Finding Nemo_ where the school of fish forms shapes to give Marlin directions?
@@ -182,12 +182,15 @@ They're stored and loaded in the .glb format.
 # Build Instructions
 Interested in running this project locally? 
 
-1. Note: If you've built in a previous environment already, empty the `gdextension/build` folder.
-**Windows**
+1. NOTE: If you've built in a previous environment already, empty the `gdextension/build` folder.
+## Windows
 2. Open the `gdextension` folder in Visual Studio.
     * If you don't have visual studio pass `-DCMAKE_CXX_COMPILER="path/to/compiler"` as an argument into CMAKE.
-3. Build as a CMAKE project.
-**Linux**
+3. Make a build directory and enter it `mkdir build` / `cd build`
+3. Run the CMAKE Command to configure the project `cmake .. -G "MinGW Makefiles"` 
+4. Build the project `cmake --build .`
+NOTE: This may take a while to build!
+## Linux
 2. `cd` to `gdextension/build`.
 3. Run `cmake ..` / `cmake .. -G Ninja`.
 4. Run `make` / `ninja`.

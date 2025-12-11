@@ -47,8 +47,6 @@ add_custom_command(
     COMMENT "Copying DLL to the bin directory"
 )
 
-#
-# cmake .. -G Ninja
-#
-# ninja
-#
+#cmake .. -G Ninja
+#ninja
+

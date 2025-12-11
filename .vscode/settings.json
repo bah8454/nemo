@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/Users/alynf/OneDrive/Documents/CSCI-712-Final-Project/nemo/src/gdextension"
+    "cmake.sourceDirectory": "C:/Users/alynf/OneDrive/Documents/CSCI-712-Final-Project/nemo/src/gdextension",
+    "C_Cpp.default.compilerPath": "C:/msys64/ucrt64/bin/gcc.exe"
 }
