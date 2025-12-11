@@ -1,13 +1,20 @@
-By Audrey Fuller, Benson Haley & Spencer Kurtz
+<p align="center">
+    By Audrey Fuller, Benson Haley & Spencer Kurtz
+<p>
 
-<video width="1920" height="1080" autoplay="" loop="" muted="">
-    <source src="./media/final.mp4" type="video/mp4">
-</video>
+# Nemo Demo
+<p align="center">
+    <video width="100%" autoplay="" loop="" muted="">
+        <source src="./media/final.mp4" type="video/mp4">
+    </video>
+</p>
 
 # Project Overview
 Do you remember the scene in _Finding Nemo_ where the school of fish forms shapes to give Marlin directions?
 
-![Finding Nemo Gif](/media/finding_nemo.gif)
+<p align="center">
+    <img src="./media/finding_nemo.gif" width="50%" alt="Finding Nemo Gif">
+</p>
 
 This project is inspired by that idea.
 We built a custom **Godot tool**, backed by a C++ GDExtension, that lets a swarm of fish **dynamically form an arbitrary shape** based on user-selected input. This provides a streamlined visualization tool for technical artists and developers working with flocking simulations or shape-based formations.
@@ -22,7 +29,9 @@ This project implements the following features:
 * **3D fish models**
 * **Underwater visual effects**
 
-![RIT Logo but Fish](/media/fish_logo.png)
+<p align="center">
+    <img src="./media/fish_logo.png" width="50%" alt="RIT Logo but Fish">
+</p>
 
 ---
 
@@ -84,7 +93,9 @@ Each frame, each boid computes the classic Boids forces:
 * **Centering**: Move toward neighbors’ average position
 * **Collision Avoidance**: Steer away from nearby boids
 
-![Boid Rules](/media/boids_rules.png)
+<p align="center">
+    <img src="./media/boids_rules.png" width="50%" alt="Boid Rules">
+</p>
 
 ```cpp
     velocity_matching = (velocity_matching / neighbor_count).normalized() * this->maximum_speed - velocity;
@@ -99,7 +110,9 @@ These are normalized, limited by max acceleration, and combined using user-provi
 ## Bounding Box
 In addition to the base flocking algorithm, our project uses a custom shape-bounding system to define new targets for the boids from an input image. This results in them re-adjust the boid's position to 'fill' the image shape, thus giving the illusion of forming a letter in 3D space. 
 
-![Fish Making an A](/media/fish_a.png)
+<p align="center">
+    <img src="./media/fish_a.png" width="50%" alt="Fish Making an A">
+</p>
 
 With our initial implementation of this, we were running into an issue where the boids would either overshoot the target entirely, OR become stationary at it's target destination. To fix this, we implemented an `offset` that angles the movement of the boid slightly adjacent to it's target position, resulting in a more orbit-like path.
 
@@ -162,8 +175,9 @@ Chaotic fish movement means we do not have to implement a more uniform (but slow
     // Enforce minimum forward speed.
     new_speed = godot::Math::max(new_speed, min_speed);
 ```
-
-![Bounding Box Algorithm Diagram](/media/boid_y_diagram.svg)
+<p align="center">
+    <img src="./media/boid_y_diagram.svg" width="50%" alt="Bounding Box Algorithm Diagram">
+</p>
 
 # Implementation
 This project uses C++ (via GDExtension) for performance.
@@ -184,7 +198,9 @@ Both environments use CMake for configuration.
 ## 3D Models
 3D Fish Models are provided by **WalterSalmon** On CGTrader [Source](https://www.cgtrader.com/free-3d-models/animals/fish/trout-rainbow-freshwater).
 
-![Fish Model](/media/trout_model.jpg)
+<p align="center">
+    <img src="./media/trout_model.jpg" width="50%" alt="Fish Model">
+</p>
 
 They're stored and loaded in the .glb format.
 
@@ -212,14 +228,18 @@ NOTE: This may take a while to build!
 Here's a small sample of the finished project!
 
 ## Fish Reacting to Different Input Letters
-<video width="640" height="480" autoplay="" loop="" muted="">
-    <source src="./media/fish.mp4" type="video/mp4">
-</video>
+<p align="center">
+    <video width="50%" autoplay="" loop="" muted="">
+        <source src="./media/fish.mp4" type="video/mp4">
+    </video>
+</p>
 
 ## Fish Forming the letter Y
-<video width="640" height="480" autoplay="" loop="" muted="">
-    <source src="./media/good.mp4" type="video/mp4">
-</video>
+<p align="center">
+    <video width="50%" autoplay="" loop="" muted="">
+        <source src="./media/good.mp4" type="video/mp4">
+    </video>
+</p>
 
 ---
 
@@ -231,4 +251,7 @@ Some possible extentions to this project:
 * Web-build deployment
 * Dynamic animation based on velocity/turning (faster tail beats, body roll, etc.)
 
-![Thanks for Reading!](/media/spinning_fish.gif)
+
+<p align="center">
+    <img src="./media/spinning_fish.gif" width="10%" alt="Thanks for Reading!">
+</p>
