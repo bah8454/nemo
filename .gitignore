@@ -9,3 +9,6 @@
 # Builds
 /src/build/
 /src/bin/
+
+# Cmake
+.vscode/
