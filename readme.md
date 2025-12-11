@@ -1,8 +1,10 @@
+
 <p align="center">
     By Audrey Fuller, Benson Haley & Spencer Kurtz
 <p>
 
 # Nemo Demo
+
 <p align="center">
     <video width="100%" autoplay="" loop="" muted="">
         <source src="./media/final.mp4" type="video/mp4">
@@ -175,6 +177,7 @@ Chaotic fish movement means we do not have to implement a more uniform (but slow
     // Enforce minimum forward speed.
     new_speed = godot::Math::max(new_speed, min_speed);
 ```
+
 <p align="center">
     <img src="./media/boid_y_diagram.svg" width="50%" alt="Bounding Box Algorithm Diagram">
 </p>
@@ -228,6 +231,7 @@ NOTE: This may take a while to build!
 Here's a small sample of the finished project!
 
 ## Fish Reacting to Different Input Letters
+
 <p align="center">
     <video width="50%" autoplay="" loop="" muted="">
         <source src="./media/fish.mp4" type="video/mp4">
@@ -235,6 +239,7 @@ Here's a small sample of the finished project!
 </p>
 
 ## Fish Forming the letter Y
+
 <p align="center">
     <video width="50%" autoplay="" loop="" muted="">
         <source src="./media/good.mp4" type="video/mp4">
