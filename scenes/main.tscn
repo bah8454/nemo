@@ -1,34 +1,91 @@
-[gd_scene load_steps=4 format=3 uid="uid://8osmtj7ugfrg"]
+[gd_scene load_steps=13 format=3 uid="uid://8osmtj7ugfrg"]
 
+[ext_resource type="Shader" uid="uid://sblagc8vxkh3" path="res://scenes/water.gdshader" id="1_jyhfs"]
 [ext_resource type="ArrayMesh" uid="uid://dnortvayo4j6i" path="res://models/teapot.obj" id="1_o5qli"]
 [ext_resource type="PackedScene" path="res://scenes/trout.tscn" id="2_0wfyh"]
+[ext_resource type="Shader" uid="uid://dinrhjssmga8r" path="res://scenes/bubble.gdshader" id="3_sugp2"]
 
 [sub_resource type="Environment" id="Environment_0wfyh"]
 volumetric_fog_enabled = true
 volumetric_fog_albedo = Color(0, 0.184314, 0.466667, 1)
+volumetric_fog_emission = Color(0.0768358, 0.0768358, 0.0768358, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tefeu"]
+render_priority = 0
+shader = ExtResource("1_jyhfs")
+
+[sub_resource type="QuadMesh" id="QuadMesh_o6xl0"]
+lightmap_size_hint = Vector2i(7, 7)
+material = SubResource("ShaderMaterial_tefeu")
+add_uv2 = true
+
+[sub_resource type="Curve" id="Curve_sugp2"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_jyhfs"]
+curve = SubResource("Curve_sugp2")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_jyhfs"]
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+direction = Vector3(0, 0, 1)
+spread = 30.0
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.1
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_jyhfs")
+hue_variation_min = -0.5
+hue_variation_max = 0.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tbgi4"]
+render_priority = 0
+shader = ExtResource("3_sugp2")
+shader_parameter/size = 0.05
+shader_parameter/outline_color = Color(7.89344e-06, 0.671696, 0.905053, 1)
+shader_parameter/outline_ratio = 1.0
+shader_parameter/noise_speed = 0.2
+shader_parameter/noise_scale = 0.4
+
+[sub_resource type="SphereMesh" id="SphereMesh_tefeu"]
+lightmap_size_hint = Vector2i(3, 2)
+material = SubResource("ShaderMaterial_tbgi4")
+radius = 0.05
+height = 0.1
 
 [node name="Node3D" type="Node3D"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_0wfyh")
 
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(-0.461692, 0.706688, 0.536127, 0.886493, 0.388828, 0.250885, -0.0311634, 0.591104, -0.805993, 0, 0, 0)
+
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.291338)
+gi_mode = 0
+mesh = SubResource("QuadMesh_o6xl0")
 
 [node name="InputManager" type="InputManager" parent="."]
 
 [node name="BoidManager" type="BoidManager" parent="."]
 count = 400
 collision_avoidance_weight = 0.1
+velocity_matching_weight = 0.02
+centering_weight = 0.02
 following_weight = 0.8
-boundary_weight = 0.1
-upright_weight = 0.0
+boundary_radius = 100.0
 range = 3.0
 prototype_path = NodePath("../Node3D/trout")
 maximum_speed = 30.0
-maximum_acceleration = 4.0
+maximum_acceleration = 2.0
 input_manager_path = NodePath("../InputManager")
 
 [node name="Teapot" type="MeshInstance3D" parent="."]
@@ -40,8 +97,17 @@ mesh = ExtResource("1_o5qli")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
 
 [node name="trout" parent="Node3D" instance=ExtResource("2_0wfyh")]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 
 [node name="AnimationPlayer" parent="Node3D/trout" index="1"]
 autoplay = "swim"
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Node3D/trout"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.22722e-08, -0.140378, 0.040062)
+amount_ratio = 0.1
+lifetime = 4.0
+randomness = 1.0
+process_material = SubResource("ParticleProcessMaterial_jyhfs")
+draw_pass_1 = SubResource("SphereMesh_tefeu")
 
 [editable path="Node3D/trout"]
