@@ -4,28 +4,34 @@ TODO: Insert Web Build for game?
 & controls info
 
 # Project Overview
-Do you remember that one scene in _Finding Nemo_ where the school of tiny fish form shapes to give directions to Marlin?
+Do you remember the scene in _Finding Nemo_ where the school of fish forms shapes to give Marlin directions?
 
-This was the main inspiration for our project, where we implement a custom tool in the Godot game engine to have fish to flock in any number of arbitrary shapes! This offers a streamlined visualization tool for technical artists and developers.  
+<iframe width="560" height="315" src="https://youtu.be/Le13by2WM70?si=kXPaxrwvXnOtghgr" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+This project is inspired by that idea.
+We built a custom **Godot tool**, backed by a C++ GDExtension, that lets a swarm of fish **dynamically form an arbitrary shape** based on user-selected input. This provides a streamlined visualization tool for technical artists and developers working with flocking simulations or shape-based formations.
+
+---
 
 # Goals
-This project implents the following functionality:
-- A generic **fish swarming algorithm** using **Boids**
-- A custom **bounding-box seeking** algorithm component
-- **User** input to select the shape
-- **Fish models**
-- **Underwater Effects**
+This project implements the following features:
+* A generic **Boids flocking algorithm**
+* A custom **shape-based bounding/targeting system**
+* **User input** for selecting the desired formation
+* **3D fish models**
+* **Underwater visual effects**
 
 ---
 
 # Algorithm Background
-## Boids
-At the core of the project lies the Boids algorithm, developed by Craig Reynolds in 1986 and designed to simulate the emergent, collective behavior group movements. The algorithm achieves this realistic simulation through a decentralized model where each individual "boid" (short for bird-oid object) follows a few simple, local rules based on its interaction with nearby boids, rather than being directed by a central leader.
+## Boids Overview
+The flocking system is based on the classic Boids algorithm, developed by Craig Reynolds (1986) to simulate emergent group behavior.
+Each boid is an autonomous agent, not controlled by a global manager. This leads to complex swarm motion emerging naturally from simple rules.
 
-For our implementation, we represent a boid with three fields:
-* It's current velocity
-* A velocity that's updated every frame
-* A destination it's traveling to, aka
+In our project, each boid tracks:
+* Its **current velocity**
+* A **new velocity** computed each frame
+* A **destination vector** used for shape-targeting
 
 ```cpp
 /// Representation of a single boid (fish) in the scene.
@@ -39,38 +45,41 @@ public:
             static_cast<godot::real_t>(godot::UtilityFunctions::randf() * 2.0 - 1.0)
         }
     {}
-
     static void _bind_methods() {}
-
     godot::Vector3 current_velocity;
     godot::Vector3 new_velocity{ 0, 0, 0 };
     godot::Vector3 destination{ 0, 0, 0 };
 };
 ```
 
+---
+
 ## Input Parameters
-For our algorithm imputs, we include the following parameters:
-**Steering behavior weights:**
-* ```collision_avoidance_weight```
-* ```velocity_matching_weight```
-* ```centering_weight```
-* ```following_weight```
-* ```boundary_weight```
-* ```upright_weight```
+Our implementation exposes several tunable parameters that control flock behavior:
+
+**Steering Behavior Weights:**
+* ```collision_avoidance_weight```: How strongly boids avoid colliding with neighbors
+* ```velocity_matching_weight```: Tendency to align with nearby boids
+* ```centering_weight```: Move toward the flock’s center
+* ```following_weight```: Strength of movement toward the assigned target pixel
+* ```boundary_weight```: How strongly the boid stays inside the formation boundary
+* ```upright_weight```: How quickly the boid rotates back toward world-up
 
 **Global flock attributes:**
-* ```range```: neighbor detection radius
-* ```boundary_radius```
-* ```maximum_speed```
-* ```maximum_acceleration```
+* ```range```: Neighbor detection radius
+* ```boundary_radius```: Outer limit before the boid is pushed inward
+* ```maximum_speed```: Velocity cap
+* ```maximum_acceleration```: Acceleration cap
 
-These can be fine-tuned to change how the fish move and react to their environmemt. 
+These parameters allow custom “behaviors” such as tight flocking, loose swimming, jittery motion, or smooth schooling.
+
+---
 
 ## Flocking Forces
-For each boid and every frame, we calculate flocking forces using variables for the three classic boids rules:
-* **velocity_matching**: align with neighbors’ velocities
-* **centering**: move toward neighbors’ average position
-* **collision_avoidance**: steer away from nearby boids
+Each frame, each boid computes the classic Boids forces:
+* **Velocity Matching**: Align with neighbors’ velocities
+* **Centering**: Move toward neighbors’ average position
+* **Collision Avoidance**: Steer away from nearby boids
 
 ```cpp
     velocity_matching = (velocity_matching / neighbor_count).normalized() * this->maximum_speed - velocity;
@@ -78,7 +87,9 @@ For each boid and every frame, we calculate flocking forces using variables for 
     collision_avoidance = collision_avoidance.normalized() * this->maximum_speed - velocity;
 ```
 
-We also normalize, scale to maximum acceleration and combine these values using weights.
+These are normalized, limited by max acceleration, and combined using user-provided weights.
+
+---
 
 ## Bounding Box
 
@@ -98,12 +109,25 @@ godot::real_t dist_from_center = position.length();
 TODO: Explain following/targeting behavior
 
 # Implementation
-We use C++ for the sake of efficiency, compiled into a dynamic link library that can be loaded by the Godot engine.  The engine exposes symbols through an implementation of GDExtension called godot-cpp.
+This project uses C++ (via GDExtension) for performance.
+The resulting shared library can be loaded by Godot 4.x and constructed cross-platform.
 
-The project is designed to compile cross-platform, as we have developers using both Windows and Linux, so we support MSVC and GCC by default.
+**Why C++?**
+* High-performance vector math
+* Tight control over memory layout for thousands of boids
+* Faster iterations inside _process()
+
+**Build System**
+The extension supports:
+* MSVC on Windows
+* GCC/Clang on Linux
+
+Both environments use CMake for configuration.
 
 ## 3D Models
-# TODO
+3D Fish Models are provided by **WalterSalmon** On CGTrader [Source](https://www.cgtrader.com/free-3d-models/animals/fish/trout-rainbow-freshwater).
+
+They're stored and loaded in the .glb format.
 
 ---
 
@@ -111,11 +135,11 @@ The project is designed to compile cross-platform, as we have developers using b
 Interested in running this project locally? 
 
 1. Note: If you've built in a previous environment already, empty the `gdextension/build` folder.
-## Windows
+**Windows**
 2. Open the `gdextension` folder in Visual Studio.
     * If you don't have visual studio pass `-DCMAKE_CXX_COMPILER="path/to/compiler"` as an argument into CMAKE.
 3. Build as a CMAKE project.
-## Linux
+**Linux**
 2. `cd` to `gdextension/build`.
 3. Run `cmake ..` / `cmake .. -G Ninja`.
 4. Run `make` / `ninja`.
@@ -125,8 +149,8 @@ Interested in running this project locally?
 
 # Future Work
 Some possible extentions to this project:
-* A larger variety of 3D models (Custom fish, birds, etc.)
-* A free look camera
-* An ocean environment
-* A web deployment 
-* Dynamic fish animation 
+* More diverse 3D models (custom fish, birds, schooling creatures)
+* Free-look camera system
+* Full underwater ocean biome
+* Web-build deployment
+* Dynamic animation based on velocity/turning (faster tail beats, body roll, etc.)
