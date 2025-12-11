@@ -2,7 +2,7 @@
 
 [ext_resource type="Shader" uid="uid://sblagc8vxkh3" path="res://scenes/water.gdshader" id="1_jyhfs"]
 [ext_resource type="ArrayMesh" uid="uid://dnortvayo4j6i" path="res://models/teapot.obj" id="1_o5qli"]
-[ext_resource type="PackedScene" path="res://scenes/trout.tscn" id="2_0wfyh"]
+[ext_resource type="PackedScene" uid="uid://bg1mc2lnkqn8i" path="res://scenes/trout.tscn" id="2_0wfyh"]
 [ext_resource type="Shader" uid="uid://dinrhjssmga8r" path="res://scenes/bubble.gdshader" id="3_sugp2"]
 
 [sub_resource type="Environment" id="Environment_0wfyh"]
