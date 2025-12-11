@@ -76,7 +76,7 @@ mesh = SubResource("QuadMesh_o6xl0")
 [node name="InputManager" type="InputManager" parent="."]
 
 [node name="BoidManager" type="BoidManager" parent="."]
-count = 400
+count = 500
 collision_avoidance_weight = 0.1
 velocity_matching_weight = 0.02
 centering_weight = 0.02
