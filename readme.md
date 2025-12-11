@@ -2,6 +2,7 @@ By Audrey Fuller, Benson Haley & Spencer Kurtz
 
 TODO: Insert Web Build for game?
 & controls info
+Otherwise final video
 
 # Project Overview
 Do you remember the scene in _Finding Nemo_ where the school of fish forms shapes to give Marlin directions?
@@ -20,6 +21,8 @@ This project implements the following features:
 * **User input** for selecting the desired formation
 * **3D fish models**
 * **Underwater visual effects**
+
+![RIT Logo but Fish](/media/fish_logo.png)
 
 ---
 
@@ -81,21 +84,22 @@ Each frame, each boid computes the classic Boids forces:
 * **Centering**: Move toward neighbors’ average position
 * **Collision Avoidance**: Steer away from nearby boids
 
+![Boid Rules](/media/boids_rules.png)
+
 ```cpp
     velocity_matching = (velocity_matching / neighbor_count).normalized() * this->maximum_speed - velocity;
     centering = ((centering / neighbor_count) - position).normalized() * this->maximum_speed - velocity;
     collision_avoidance = collision_avoidance.normalized() * this->maximum_speed - velocity;
 ```
 
-These are normalized, limited by max acceleration, and combined using user-provided weights.
+These are normalized, limited by max acceleration, and combined using user-provided weights. We also add a following parameter to move a fish towards its destination.
 
 ---
 
 ## Bounding Box
-
 In addition to the base flocking algorithm our algorithm uses a custom boundary force parameter to re-adjust the boid's position to push inward when outside of the letter shape.
 
-TODO: Add updated code for letter input, not just center
+![Fish Making an A](/media/fish_a.png)
 
 ```cpp
 godot::real_t dist_from_center = position.length();
@@ -106,7 +110,49 @@ godot::real_t dist_from_center = position.length();
             }
 ```
 
-TODO: Explain following/targeting behavior
+This is done in **Three Steps**:
+1. Keyboard input is received and saved into a shared buffer that the Boid management algorithm can read from.
+
+```cpp
+static void _bind_methods() {
+    BIND_ENUM_CONSTANT(Mode::keyboard);
+    BIND_ENUM_CONSTANT(Mode::camera);
+    using This = InputManager;
+    BIND_PROPERTY(mode, godot::Variant::INT, godot::PropertyHint::PROPERTY_HINT_ENUM, "keyboard,camera");
+    BIND_PROPERTY(current, godot::Variant::STRING);
+}
+```
+
+2. Destination points are randomly scattered across the letter shape using Poisson-Disk sampling.
+Chaotic fish movement means we do not have to implement a more uniform (but slower) algorithm like Voronoi pattern initialization.
+
+```cpp
+    godot::Vector2 candidate = masked_pixels[this->rng->randi_range(0, masked_pixels.size())];
+    bool ok = true;
+    for (godot::Vector2& point : this->mask_points) {
+        if (point.distance_to(candidate) < minimum_distance) {
+            ok = false;
+            break;
+        }
+    }
+```
+
+3. Boid steering is weighted with a following parameter, but minimum linear speed is maintained to prevent freezing once the destination is reached.
+
+```cpp
+    godot::real_t current_speed = velocity.length();
+    godot::real_t max_speed_change = this->maximum_acceleration * delta;
+    godot::real_t new_speed = current_speed;
+    if (current_speed < desired_target_speed) {
+        new_speed = godot::Math::min(desired_target_speed, current_speed + max_speed_change);
+    } else if (current_speed > desired_target_speed) {
+        new_speed = godot::Math::max(desired_target_speed, current_speed - max_speed_change);
+    }
+    // Enforce minimum forward speed.
+    new_speed = godot::Math::max(new_speed, min_speed);
+```
+
+![Bounding Box Algorithm Diagram](/media/boid_y_diagram.svg)
 
 # Implementation
 This project uses C++ (via GDExtension) for performance.
@@ -127,6 +173,8 @@ Both environments use CMake for configuration.
 ## 3D Models
 3D Fish Models are provided by **WalterSalmon** On CGTrader [Source](https://www.cgtrader.com/free-3d-models/animals/fish/trout-rainbow-freshwater).
 
+![Fish Model](/media/trout_model.jpg)
+
 They're stored and loaded in the .glb format.
 
 ---
@@ -144,8 +192,18 @@ Interested in running this project locally?
 3. Run `cmake ..` / `cmake .. -G Ninja`.
 4. Run `make` / `ninja`.
 
+---
+
 # Results
-- TODO: How it looked (results...screen shots)
+Here's a small sample of the finished project!
+
+## Fish Reacting to Different Input Letters
+![Fish Reacting to Different Input Letters](/media/fish.mp4)
+
+## Fish Forming the letter Y
+![Fish Forming the Letter Y](/media/good.mp4)
+
+---
 
 # Future Work
 Some possible extentions to this project:
@@ -154,3 +212,5 @@ Some possible extentions to this project:
 * Full underwater ocean biome
 * Web-build deployment
 * Dynamic animation based on velocity/turning (faster tail beats, body roll, etc.)
+
+![Thanks for Reading!](/media/spinning_fish.gif)
